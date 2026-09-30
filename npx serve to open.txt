@@ -1,0 +1,12 @@
+How to open the baller particle-sphere demo (do NOT double-click index.html):
+
+Camera + ES modules need a local server (browser blocks webcam on file://).
+
+1. cd into this folder, then run one of:
+     npx serve .
+   or:
+     python -m http.server 8000
+2. Open the printed URL, e.g. http://localhost:3000  (or http://127.0.0.1:8000)
+3. Click "Start Camera" and allow webcam access.
+
+Or double-click launch.hta in this folder for one-click start.

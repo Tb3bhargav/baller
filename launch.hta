@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Baller Launcher</title>
+<HTA:APPLICATION
+  ID="BallerLauncher"
+  APPLICATIONNAME="BallerLauncher"
+  BORDER="thin"
+  CAPTION="yes"
+  SHOWINTASKBAR="yes"
+  SINGLEINSTANCE="yes"
+  SYSMENU="yes"
+  WINDOWSTATE="normal"
+  SCROLL="no"
+  CONTEXTMENU="no"
+/>
+<style>
+  body { font-family: "Segoe UI", sans-serif; background: #000; color: #c8ffff; margin: 0; padding: 20px; }
+  .card { max-width: 480px; margin: 0 auto; background: #0a1414; border: 1px solid #00ffff; border-radius: 14px; padding: 22px 24px; }
+  h1 { font-size: 20px; margin: 0 0 6px; color: #00ffff; }
+  p { font-size: 13px; line-height: 1.55; opacity: 0.85; }
+  .note { background: rgba(0,255,255,0.07); border: 1px solid rgba(0,255,255,0.3); border-radius: 8px; padding: 8px 10px; font-size: 12px; }
+  button { display: block; width: 100%; margin: 8px 0; padding: 11px; font-size: 14px; font-weight: 600;
+           border-radius: 9px; border: 1px solid #00ffff; background: rgba(0,255,255,0.2); color: #00ffff; cursor: pointer; }
+  button.alt { background: transparent; font-weight: 500; }
+  #status { font-size: 12px; color: #7dffd4; min-height: 18px; margin-top: 8px; }
+</style>
+<script language="VBScript">
+  Dim shell, appDir
+  Set shell = CreateObject("WScript.Shell")
+  appDir = HtaFolder()
+
+  Function HtaFolder()
+    Dim u
+    u = document.URL
+    u = Replace(u, "file:///", "")
+    u = Replace(u, "/", "\")
+    u = UnEscape(u)
+    HtaFolder = Left(u, InStrRev(u, "\") - 1)
+  End Function
+
+  Sub Window_OnLoad()
+    window.resizeTo 560, 600
+    document.getElementById("projdir").innerText = appDir
+  End Sub
+
+  Sub SetStatus(msg)
+    document.getElementById("status").innerText = msg
+  End Sub
+
+  Sub StartServer()
+    shell.CurrentDirectory = appDir
+    shell.Run "cmd /k npx serve .", 1, False
+    SetStatus "Local server starting (then open http://localhost:3000)..."
+  End Sub
+
+  Sub OpenViaServer()
+    shell.Run "http://localhost:3000", 1, False
+    SetStatus "Opening app via local server..."
+  End Sub
+
+  Sub OpenMain()
+    shell.Run Chr(34) & appDir & "\index.html" & Chr(34), 1, False
+    SetStatus "Opening index.html (camera needs the server above, not file://)."
+  End Sub
+</script>
+</head>
+<body>
+  <div class="card">
+    <h1>Baller &mdash; 3D Particle Sphere</h1>
+    <p>Interactive Three.js particle sphere with mouse + hand-tracking control (MediaPipe). No install needed, but the camera only works over a local server.</p>
+    <p class="note">Click <b>1</b>, wait for the URL, then <b>2</b>. Project folder:<br><span id="projdir"></span></p>
+    <button onclick="vbscript:StartServer()">1. Start Server (npx serve .)</button>
+    <button onclick="vbscript:OpenViaServer()">2. Open via Server (localhost:3000)</button>
+    <button class="alt" onclick="vbscript:OpenMain()">Open Main File (index.html)</button>
+    <div id="status"></div>
+  </div>
+</body>
+</html>
